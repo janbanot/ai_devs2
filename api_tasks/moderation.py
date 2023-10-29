@@ -1,3 +1,5 @@
+# TODO: try rewritting/create another one using Langchain
+
 import os
 from dotenv import load_dotenv
 from ai_devs_task import Task
@@ -7,7 +9,7 @@ load_dotenv()
 ai_devs_api_key = os.getenv('AI_DEVS_API_KEY')
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
-moderation = Task(ai_devs_api_key, "moderation")
+moderation = Task(ai_devs_api_key, 'moderation')
 token = moderation.auth()
 task_content = moderation.get_content(token)
 sentence_list = task_content['input']
