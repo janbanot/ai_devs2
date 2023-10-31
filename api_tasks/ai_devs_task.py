@@ -14,7 +14,7 @@ class Task:
         response = requests.post(auth_url, json=data)
         response_json = json.loads(response.text)
         # TODO: add error handling
-        return response_json['token']
+        return response_json["token"]
 
     def get_content(self, token):
         get_content_url = f"{self.url}/task/{token}"
