@@ -1,9 +1,9 @@
 # TODO: try rewritting/create another one using Langchain
 
 import os
+import openai
 from dotenv import load_dotenv
 from ai_devs_task import Task
-import openai
 
 load_dotenv()
 ai_devs_api_key = os.getenv("AI_DEVS_API_KEY")
