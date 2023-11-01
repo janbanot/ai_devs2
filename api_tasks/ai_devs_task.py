@@ -22,6 +22,11 @@ class Task:
         # TODO: add error handling
         return json.loads(response.text)
 
+    def post_question(self, token, question):
+        post_question_url = f"{self.url}/task/{token}"
+        response = requests.post(post_question_url, data=question)
+        return json.loads(response.text)
+
     def post_answer(self, token, answer_payload):
         answer_url = f"{self.url}/answer/{token}"
         response = requests.post(answer_url, json=answer_payload)
