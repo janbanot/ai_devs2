@@ -1,6 +1,6 @@
 import os
 import openai
-import requests
+import requests  # type: ignore
 import tempfile
 from dotenv import load_dotenv
 from ai_devs_task import Task
