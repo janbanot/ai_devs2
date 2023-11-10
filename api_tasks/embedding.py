@@ -1,22 +1,23 @@
 import os
+from typing import List, Dict, Any
 import openai
 from dotenv import load_dotenv
 from ai_devs_task import Task
 
 load_dotenv()
-ai_devs_api_key = os.getenv("AI_DEVS_API_KEY")
-openai.api_key = os.getenv("OPENAI_API_KEY")
+ai_devs_api_key: str = os.getenv("AI_DEVS_API_KEY", "")
+openai.api_key = os.getenv("OPENAI_API_KEY", "")
 
-embedding = Task(ai_devs_api_key, "embedding")
-token = embedding.auth()
+embedding: Task = Task(ai_devs_api_key, "embedding")
+token: str = embedding.auth()
 
-text_string = "Hawaiian pizza"
-model_id = "text-embedding-ada-002"
+text_string: str = "Hawaiian pizza"
+model_id: str = "text-embedding-ada-002"
 
-embedding_list = openai.Embedding.create(
+embedding_list: List[float] = openai.Embedding.create(
     input=text_string,
     model=model_id)["data"][0]["embedding"]
 
-answer_payload = {"answer": embedding_list}
-task_result = embedding.post_answer(token, answer_payload)
+answer_payload: Dict[str, List[float]] = {"answer": embedding_list}
+task_result: Dict[str, Any] = embedding.post_answer(token, answer_payload)
 print(task_result)
