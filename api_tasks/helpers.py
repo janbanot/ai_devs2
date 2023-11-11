@@ -6,8 +6,8 @@ from enum import Enum
 
 
 class ErrorCodes(Enum):
-    BOT_DETECTED = (403, 'bot detected!')
-    SERVER_ERROR = (500, 'server error X_X')
+    BOT_DETECTED = (403, "bot detected!")
+    SERVER_ERROR = (500, "server error X_X")
 
 
 def handle_request(method: str, url: str, **kwargs) -> Response:
@@ -42,7 +42,7 @@ def send_request(
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
                 "(KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
             )
-            base_kwargs['headers'] = {'User-Agent': headers}
+            base_kwargs["headers"] = {"User-Agent": headers}
         elif response == ErrorCodes.SERVER_ERROR.value:
             print(f"HTTP error occurred: {response[0]}, {response[1]}")
             print(f"Retrying after {delay} seconds...")

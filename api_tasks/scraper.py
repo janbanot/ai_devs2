@@ -29,7 +29,7 @@ Answer using the following knowledge:
 answer: openai.ChatCompletion = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
-            {'role': "'ystem", "content": system},
+            {"role": "system", "content": system},
             {"role": "user", "content": question}
         ]
     )
