@@ -7,18 +7,18 @@ from helpers import send_request
 
 
 load_dotenv()
-ai_devs_api_key: str = os.getenv('AI_DEVS_API_KEY', '')
-openai.api_key = os.getenv('OPENAI_API_KEY', '')
+ai_devs_api_key: str = os.getenv("AI_DEVS_API_KEY", "")
+openai.api_key = os.getenv("OPENAI_API_KEY", "")
 
-scraper: Task = Task(ai_devs_api_key, 'scraper')
+scraper: Task = Task(ai_devs_api_key, "scraper")
 
 token: str = scraper.auth()
 task_content: Dict[str, Any] = scraper.get_content(token)
 
-url: str = task_content['input']
-question: str = task_content['question']
+url: str = task_content["input"]
+question: str = task_content["question"]
 
-response_text: str = send_request('GET', url)
+response_text: str = send_request("GET", url)
 
 system: str = f"""
 You answer the question concisely, in one sentence.
