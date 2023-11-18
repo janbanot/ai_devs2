@@ -18,10 +18,13 @@ class Task:
         return response_json["token"]
 
     def get_content(self, token: str) -> Dict[str, Any]:
-        get_content_url: str = f"{self.url}/task/{token}"
-        response = requests.get(get_content_url)
-        # TODO: add error handling
-        return json.loads(response.text)
+        try:
+            get_content_url: str = f"{self.url}/task/{token}"
+            response = requests.get(get_content_url)
+            return json.loads(response.text)
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return {}
 
     def post_question(self, token: str, question: Dict[str, str]) -> Dict[str, Any]:
         post_question_url: str = f"{self.url}/task/{token}"
