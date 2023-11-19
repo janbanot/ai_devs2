@@ -5,14 +5,12 @@ from qdrant_client.http.exceptions import UnexpectedResponse
 
 
 client = QdrantClient("localhost", port=6333)
-collection_name = "test_collection"
+collection_name = "test_collection2"
 try:
     response = client.get_collection(collection_name=collection_name)
     print(response)
 except UnexpectedResponse as e:
     if "404 (Not Found)" in str(e):
-        print("404 Error: Collection not found.")
-
         client.create_collection(
             collection_name=collection_name,
             vectors_config=VectorParams(size=4, distance=Distance.DOT),
