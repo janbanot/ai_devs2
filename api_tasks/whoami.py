@@ -77,7 +77,7 @@ def function_calling(query: str) -> Dict[str, Any]:
     ]
 
     response = openai.ChatCompletion.create(
-        model="gpt-4-0613",
+        model="gpt-3.5-turbo-1106",
         messages=[{"role": "user", "content": query}],
         functions=function_descriptions
     )
