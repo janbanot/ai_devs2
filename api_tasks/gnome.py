@@ -1,12 +1,12 @@
 import os
-import openai
+from openai import OpenAI
 from dotenv import load_dotenv
 from ai_devs_task import Task
 from typing import Dict, Any
 
 load_dotenv()
 ai_devs_api_key: str = os.getenv("AI_DEVS_API_KEY", "")
-openai.api_key = os.getenv("OPENAI_API_KEY", "")
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY", ""))
 
 gnome: Task = Task(ai_devs_api_key, "gnome")
 token: str = gnome.auth()
@@ -19,7 +19,7 @@ Answer in polish.
 If the does not show a gnome with a hat, answer with "ERROR".
 """
 
-response = openai.ChatCompletion.create(
+response = client.chat.completions.create(
   model="gpt-4-vision-preview",
   messages=[
     {
@@ -38,7 +38,7 @@ response = openai.ChatCompletion.create(
   max_tokens=300,
 )
 
-answer: str = response.choices[0].message.content
+answer = response.choices[0].message.content or ""
 answer_payload: Dict[str, str] = {"answer": answer}
 task_result: Dict[str, Any] = gnome.post_answer(token, answer_payload)
 print(task_result)

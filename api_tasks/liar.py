@@ -1,12 +1,12 @@
 import os
-import openai
+from openai import OpenAI
 from dotenv import load_dotenv
 from ai_devs_task import Task
 from typing import Dict, Any
 
 load_dotenv()
 ai_devs_api_key: str = os.getenv("AI_DEVS_API_KEY", "")
-openai.api_key = os.getenv("OPENAI_API_KEY", "")
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY", ""))
 
 liar: Task = Task(ai_devs_api_key, "liar")
 
@@ -24,14 +24,14 @@ Is it a correct answer to the following question:
 """
 
 
-check_answer: openai.ChatCompletion = openai.ChatCompletion.create(
+check_answer = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
             {"role": "system", "content": prompt},
             {"role": "user", "content": answer}
         ]
     )
-answer_content: str = check_answer["choices"][0]["message"]["content"]
+answer_content: str = check_answer.choices[0].message.content or ""
 
 result_payload: Dict[str, str] = {"answer": answer_content}
 result: Dict[str, Any] = liar.post_answer(token, result_payload)

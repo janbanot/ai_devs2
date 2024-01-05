@@ -1,6 +1,6 @@
 import os
 import requests  # type: ignore
-import openai
+from openai import OpenAI
 import uuid
 from dotenv import load_dotenv
 from ai_devs_task import Task
@@ -13,7 +13,7 @@ SOURCE_URL = "https://zadania.aidevs.pl/data/people.json"
 
 load_dotenv()
 ai_devs_api_key: str = os.getenv("AI_DEVS_API_KEY", "")
-openai.api_key = os.getenv("OPENAI_API_KEY", "")
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY", ""))
 
 people: Task = Task(ai_devs_api_key, "people")
 token: str = people.auth()
@@ -65,14 +65,14 @@ Examples:
 Ulubiony kolor Agnieszki Rozkaz, to?
 expected: Agnieszka Rozkaz
 """
-name_surname: openai.ChatCompletion = openai.ChatCompletion.create(
+name_surname = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
             {"role": "system", "content": prompt_name},
             {"role": "user", "content": task_content["question"]}
         ]
     )
-name_surname_string = name_surname.choices[0].message["content"]
+name_surname_string = name_surname.choices[0].message.content or ""
 query_embedding = embeddings.embed_query(name_surname_string)
 search_result = qdrant.search(
     collection_name=COLLECTION_NAME,
@@ -95,14 +95,14 @@ Answer the question about the person based on the text below
 {info}
 """
 
-api_response: openai.ChatCompletion = openai.ChatCompletion.create(
+api_response = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
             {"role": "system", "content": prompt_info},
             {"role": "user", "content": task_content["question"]}
         ]
     )
-answer = api_response.choices[0].message["content"]
+answer = api_response.choices[0].message.content or ""
 answer_payload: Dict[str, str] = {"answer": answer}
 task_result: Dict[str, Any] = people.post_answer(token, answer_payload)
 print(task_result)

@@ -15,6 +15,7 @@ colorama==0.4.6
 contourpy==1.2.0
 cycler==0.12.1
 dataclasses-json==0.6.2
+distro==1.9.0
 embeddings-util==1.0.1
 et-xmlfile==1.1.0
 exceptiongroup==1.1.3
@@ -49,7 +50,7 @@ multidict==6.0.4
 mypy==1.7.0
 mypy-extensions==1.0.0
 numpy==1.26.1
-openai==0.28.1
+openai==1.6.1
 openpyxl==3.1.2
 packaging==23.2
 pandas==2.1.2
