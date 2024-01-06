@@ -1,5 +1,6 @@
 import os
-import openai
+import json
+from openai import OpenAI
 import requests  # type: ignore
 from dotenv import load_dotenv
 from ai_devs_task import Task
@@ -7,7 +8,7 @@ from typing import Dict, List, Any
 
 load_dotenv()
 ai_devs_api_key: str = os.getenv("AI_DEVS_API_KEY", "")
-openai.api_key = os.getenv("OPENAI_API_KEY", "")
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY", ""))
 
 knowledge: Task = Task(ai_devs_api_key, "knowledge")
 token: str = knowledge.auth()
@@ -27,7 +28,7 @@ def get_population(country: str) -> int:
     return response[0]["population"]
 
 
-def function_calling(query: str) -> Dict[str, Any]:
+def function_calling(query: str):
     function_descriptions: List[Dict[str, Any]] = [
                 {
                     "name": "get_exchange_rate",
@@ -59,28 +60,30 @@ def function_calling(query: str) -> Dict[str, Any]:
                 }
     ]
 
-    response = openai.ChatCompletion.create(
+    response = client.chat.completions.create(
         model="gpt-4-0613",
         messages=[{"role": "user", "content": query}],
-        functions=function_descriptions
+        functions=function_descriptions   # type: ignore
     )
-    response_message = response["choices"][0]["message"]
+    response_message = response.choices[0].message
 
-    if "function_call" in response_message:
-        return response_message["function_call"]
+    if response_message.function_call:
+        return response_message.function_call  # type: ignore
     else:
-        return response_message
+        return response_message  # type: ignore
 
 
 fcall = function_calling(question)
 
-if "content" in fcall:
-    answer = fcall["content"]
-elif fcall["name"] == "get_exchange_rate":
-    currency = fcall["arguments"]["currency"]
+if hasattr(fcall, 'content'):
+    answer = fcall.content
+elif fcall.name == "get_exchange_rate":
+    arguments = json.loads(fcall.arguments)
+    currency = arguments["currency"]
     answer = get_exchange_rate(currency)
-elif fcall["name"] == "get_population":
-    country = fcall["arguments"]["country"]
+elif fcall.name == "get_population":
+    arguments = json.loads(fcall.arguments)
+    country = arguments["country"]
     answer = get_population(country)
 
 answer_payload: Dict[str, str] = {"answer": answer}
