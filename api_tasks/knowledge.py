@@ -6,15 +6,6 @@ from dotenv import load_dotenv
 from ai_devs_task import Task
 from typing import Dict, List, Any
 
-load_dotenv()
-ai_devs_api_key: str = os.getenv("AI_DEVS_API_KEY", "")
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY", ""))
-
-knowledge: Task = Task(ai_devs_api_key, "knowledge")
-token: str = knowledge.auth()
-task_content: Dict[str, Any] = knowledge.get_content(token)
-question: str = task_content["question"]
-
 
 def get_exchange_rate(currency: str) -> float:
     url: str = f"http://api.nbp.pl/api/exchangerates/rates/a/{currency}/?format=json"
@@ -73,19 +64,29 @@ def function_calling(query: str):
         return response_message  # type: ignore
 
 
-fcall = function_calling(question)
+if __name__ == "__main__":
+    load_dotenv()
+    ai_devs_api_key: str = os.getenv("AI_DEVS_API_KEY", "")
+    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY", ""))
 
-if hasattr(fcall, 'content'):
-    answer = fcall.content
-elif fcall.name == "get_exchange_rate":
-    arguments = json.loads(fcall.arguments)
-    currency = arguments["currency"]
-    answer = get_exchange_rate(currency)
-elif fcall.name == "get_population":
-    arguments = json.loads(fcall.arguments)
-    country = arguments["country"]
-    answer = get_population(country)
+    knowledge: Task = Task(ai_devs_api_key, "knowledge")
+    token: str = knowledge.auth()
+    task_content: Dict[str, Any] = knowledge.get_content(token)
+    question: str = task_content["question"]
 
-answer_payload: Dict[str, str] = {"answer": answer}
-task_result: Dict[str, Any] = knowledge.post_answer(token, answer_payload)
-print(task_result)
+    fcall = function_calling(question)
+
+    if hasattr(fcall, 'content'):
+        answer = fcall.content
+    elif fcall.name == "get_exchange_rate":
+        arguments = json.loads(fcall.arguments)
+        currency = arguments["currency"]
+        answer = get_exchange_rate(currency)
+    elif fcall.name == "get_population":
+        arguments = json.loads(fcall.arguments)
+        country = arguments["country"]
+        answer = get_population(country)
+
+    answer_payload: Dict[str, str] = {"answer": answer}
+    task_result: Dict[str, Any] = knowledge.post_answer(token, answer_payload)
+    print(task_result)

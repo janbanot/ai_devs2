@@ -1,5 +1,5 @@
 import os
-import openai
+from openai import OpenAI
 import json
 from dotenv import load_dotenv
 from ai_devs_task import Task
@@ -7,7 +7,7 @@ from typing import Dict, List, Any
 
 load_dotenv()
 ai_devs_api_key: str = os.getenv("AI_DEVS_API_KEY", "")
-openai.api_key = os.getenv("OPENAI_API_KEY", "")
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY", ""))
 
 tools: Task = Task(ai_devs_api_key, "tools")
 token: str = tools.auth()
@@ -42,17 +42,17 @@ def function_calling(query: str) -> Dict[str, Any]:
                 }
     ]
 
-    response = openai.ChatCompletion.create(
+    response = client.chat.completions.create(
         model="gpt-4-0613",
         messages=[{"role": "user", "content": query}],
-        functions=function_descriptions
+        functions=function_descriptions  # type: ignore
     )
-    response_message = response["choices"][0]["message"]
+    response_message = response.choices[0].message
 
-    if "function_call" in response_message:
-        return response_message["function_call"]
+    if response_message.function_call:
+        return response_message.function_call  # type: ignore
     else:
-        return response_message
+        return response_message  # type: ignore
 
 
 fcall_dict = function_calling(task_content["question"])

@@ -1,15 +1,14 @@
 import os
 import json
-import openai
+from openai import OpenAI
 from dotenv import load_dotenv
 from ai_devs_task import Task
 from typing import Dict, Any, List, Tuple
 
-# TODO add typing
-
+# TODO add typing, refactor!!!
 load_dotenv()
 ai_devs_api_key: str = os.getenv("AI_DEVS_API_KEY", "")
-openai.api_key = os.getenv("OPENAI_API_KEY", "")
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY", ""))
 
 whoami: Task = Task(ai_devs_api_key, "whoami")
 
@@ -25,18 +24,18 @@ If you are not certain answer with "HINT"
 
 def guess(task: Task, context: List[str], prompt: str) -> Tuple[str, str]:
     token: str = task.auth()
-    content: Dict[str, Any] = whoami.get_content(token)
+    content: Dict[str, Any] = task.get_content(token)
     hint: str = content["hint"]
     context.append(hint)
     enriched_prompt: str = enrich_prompt(prompt, context)
-    check_answer: openai.ChatCompletion = openai.ChatCompletion.create(
+    check_answer = client.chat.completions.create(
         model="gpt-4",
         messages=[
             {"role": "system", "content": enriched_prompt},
             {"role": "user", "content": "Who am I?"}
         ]
     )
-    return (token, check_answer["choices"][0]["message"]["content"])
+    return (token, check_answer.choices[0].message.content or "")
 
 
 def enrich_prompt(prompt: str, context: List[str]) -> str:
@@ -45,7 +44,7 @@ def enrich_prompt(prompt: str, context: List[str]) -> str:
     return prompt
 
 
-def function_calling(query: str) -> Dict[str, Any]:
+def function_calling(query: str):
     function_descriptions: List[Dict[str, Any]] = [
                 {
                     "name": "post_answer",
@@ -76,14 +75,14 @@ def function_calling(query: str) -> Dict[str, Any]:
                 }
     ]
 
-    response = openai.ChatCompletion.create(
+    response = client.chat.completions.create(
         model="gpt-3.5-turbo-1106",
         messages=[{"role": "user", "content": query}],
-        functions=function_descriptions
+        functions=function_descriptions  # type: ignore
     )
-    response_message = response["choices"][0]["message"]
+    response_message = response.choices[0].message.function_call or ""
 
-    return response_message["function_call"]
+    return response_message
 
 
 def solve():
