@@ -12,7 +12,7 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY", ""))
 optimaldb: Task = Task(ai_devs_api_key, "optimaldb")
 token: str = optimaldb.auth()
 task_content: Dict[str, Any] = optimaldb.get_content(token)
-print(task_content)
+
 db_url: str = task_content["database"]
 people_data = requests.get(db_url).json()
 
