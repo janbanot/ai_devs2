@@ -10,5 +10,7 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY", ""))
 
 google: Task = Task(ai_devs_api_key, "google")
 token: str = google.auth()
-task_content: Dict[str, Any] = google.get_content(token)
-print(task_content)
+endpoint = "test_api_url"
+answer_payload: Dict[str, Any] = {"answer": endpoint}
+task_result: Dict[str, Any] = google.post_answer(token, answer_payload)
+print(task_result)
