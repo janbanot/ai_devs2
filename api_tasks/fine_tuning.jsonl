@@ -1,0 +1,12 @@
+{"messages":[{"role":"system","content":"md2html"},{"role":"user","content":"# This is a Header"},{"role":"assistant","content":"<h1>This is a Header</h1>"}]}
+{"messages":[{"role":"system","content":"md2html"},{"role":"user","content":"This is **bold** text"},{"role":"assistant","content":"This is <b>bold</b> text"}]}
+{"messages":[{"role":"system","content":"md2html"},{"role":"user","content":"This is *italic* text"},{"role":"assistant","content":"This is <i>italic</i> text"}]}
+{"messages":[{"role":"system","content":"md2html"},{"role":"user","content":"This is _underline_ text"},{"role":"assistant","content":"This is <u>underline</u> text"}]}
+{"messages":[{"role":"system","content":"md2html"},{"role":"user","content":"> This is a blockquote"},{"role":"assistant","content":"<blockquote>This is a blockquote</blockquote>"}]}
+{"messages":[{"role":"system","content":"md2html"},{"role":"user","content":"Visit [OpenAI](https://openai.com)"},{"role":"assistant","content":"Visit <a href=\"https://openai.com\">OpenAI</a>"}]}
+{"messages":[{"role":"system","content":"md2html"},{"role":"user","content":"## This is a **bold** Header"},{"role":"assistant","content":"<h2>This is a <b>bold</b> Header</h2>"}]}
+{"messages":[{"role":"system","content":"md2html"},{"role":"user","content":"### *Italic* and _underline_"},{"role":"assistant","content":"<h3><i>Italic</i> and <u>underline</u></h3>"}]}
+{"messages":[{"role":"system","content":"md2html"},{"role":"user","content":"# Header and > Blockquote"},{"role":"assistant","content":"<h1>Header and </h1><blockquote> Blockquote</blockquote>"}]}
+{"messages":[{"role":"system","content":"md2html"},{"role":"user","content":"### **Bold**, *Italic*, and > Blockquote"},{"role":"assistant","content":"<h3><b>Bold</b>, <i>Italic</i>, and </h3><blockquote> Blockquote</blockquote>"}]}
+{"messages":[{"role":"system","content":"md2html"},{"role":"user","content":"## Header with _underline_"},{"role":"assistant","content":"<h2>Header with <u>underline</u></h2>"}]}
+{"messages":[{"role":"system","content":"md2html"},{"role":"user","content":"this is **important** note about [AI Devs](https://aidevs.pl). Please _read_ it!"},{"role":"assistant","content":"this is <b>important</b> note about <a href=\"https://aidevs.pl\">AI Devs</a>. Please <u>read</u> it!"}]}

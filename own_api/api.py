@@ -170,5 +170,31 @@ def google_answer():
                 return jsonify({'reply': result})
 
 
+def md2html(input):
+    prompt = "md2html"
+    model_response = client.chat.completions.create(
+        model="ft:gpt-3.5-turbo-1106:personal::8iqli9zY",
+        messages=[
+            {"role": "system", "content": prompt},
+            {"role": "user", "content": input}
+        ]
+    )
+    html = model_response.choices[0].message.content or ""
+    return html
+
+
+@app.route('/md2html', methods=['POST'])
+def md2html_answer():
+    if request.method == 'POST':
+        data = request.get_json()
+        if data is not None:
+            question = data.get('question')
+            if question is not None:
+                html = md2html(question)
+                app.logger.info('Request: %s', request)
+                app.logger.info('Response: %s', html)
+                return jsonify({'reply': html})
+
+
 if __name__ == '__main__':
     app.run(debug=True)
